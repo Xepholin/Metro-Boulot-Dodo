@@ -1,4 +1,3 @@
-from graph import *
 from parse import *
 from set import *
 
@@ -6,8 +5,7 @@ sommets, aretes = parse("data.txt")
 
 vertrices = new_vertrices(sommets)
 
-print(vertrices[0].get_id(), vertrices[0].get_name())
+graph = new_graph(1, vertrices, aretes)
 
-graph = new_graph(vertrices, aretes) 
-
-print(graph.edges.items())
+a, b = graph.edges[0]
+print("de", a.name, "à", b.name, "=", graph.edges_value[graph.find_couple(a, b)])

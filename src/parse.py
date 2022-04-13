@@ -10,13 +10,12 @@ def parse(file):
                 continue
             elif (line.startswith('V')):
                 name, number = parse_vertex(line)
-                vertices.update([(name, number)])
+                vertices[number] = name
             elif (line.startswith('E')):
                 vertex1, vertex2, time = parse_edge(line)
-                edges.update([((vertex1, vertex2), time)])
+                edges[(vertex1, vertex2)] = time
             else:
                 continue
-    
     return vertices, edges
 
 def parse_vertex(string):
