@@ -1,5 +1,3 @@
-from graph import *
-
 def parse(file):
     vertices = dict()
     edges = dict()

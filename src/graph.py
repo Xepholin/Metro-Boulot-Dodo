@@ -17,7 +17,7 @@ class Vertex(object):
         return self.name
 
     def get_neighbors(self):
-        return dict([[(name, id) for id, name in vertex] for vertex in self.neighbors])
+        return [{vertex.id : vertex.name} for vertex in self.neighbors]
 
     def set_graph(self, graph):
         self.graph = graph
@@ -38,6 +38,9 @@ class Vertex(object):
     def add_neighbor(self, vertex):
         if (vertex not in self.neighbors):
             self.neighbors.append(vertex)
+
+    def print_vertex(self):
+        print("Graph : {} | ID : {} | Name : {}".format(self.graph, self.id, self.name))
 
 class Graph(object):
     """Un graphe simple"""
@@ -87,18 +90,22 @@ class Graph(object):
         if (vertex1 in self.vertrices and vertex2 in self.vertrices):
             new_vertex1 = self.vertrices[vertex1]
             new_vertex2 = self.vertrices[vertex2]
-            couple = new_vertex1, new_vertex2
-            return couple
+            return new_vertex1, new_vertex2
         else:
             return 0
             
     def add_edge(self, vertex1, vertex2):
         couple = self.find_couple(vertex1, vertex2)
+        new_vertex1, new_vertex2 = couple
         if (couple):
             self.edges[len(self.edges)] = couple
+            new_vertex1.add_neighbor(new_vertex2)
+            new_vertex2.add_neighbor(new_vertex1)
             return True
+            
         else:
             return False
+            
 
     def find_edge(self, couple):
         if (isinstance(couple, tuple)):
@@ -131,8 +138,6 @@ class Graph(object):
                 return True
         else:
             return False
-
-    
 
 
     def print_graph(self):
