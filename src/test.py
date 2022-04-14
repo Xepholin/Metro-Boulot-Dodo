@@ -3,7 +3,13 @@ a = dict()
 couple = 'a', 'b'
 a[0] = couple
 
-if (couple):
-    print("here")
-else: 
-    print("no")
+b = dict.fromkeys(a.values())
+
+print(b)
+
+for value in b:
+    print(value)
+    if (b[value] is not None):
+        print('oui')
+    else:
+        print('non')

@@ -2,20 +2,14 @@ from set import *
 
 graph = new_graph(1, "data.txt")
 
-a, b = graph.edges[0]
-
 if (graph.is_connected()):
-    print("yes")
+    print("graph : yes")
 else:
-    print("no")
+    print("graph : no")
 
-"""
 graph_test = new_graph(2, "data2.txt")
 
-graph_test.print_neighbors()
-
 if (graph_test.is_connected()):
-    print("yes")
+    print("graph_test : yes")
 else:
-    print("no")
-"""
+    print("graph_test : no")

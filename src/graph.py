@@ -151,13 +151,13 @@ class Graph(object):
     def DFS(self, visited, vertex):
         visited[vertex] = "discovered"
         for neighbor in vertex.neighbors:
-            if (neighbor not in visited):
+            if (visited[neighbor] is None):
                 self.DFS(visited, neighbor)
 
-        return len(visited)
+        return len([vertex for vertex, discovered in visited.items() if discovered =="discovered"])
 
     def is_connected(self):
-        visited = dict()
+        visited = dict.fromkeys(self.vertices.values())
         visited = self.DFS(visited, list(self.vertices.values())[0])
 
         if (visited == self.vertex_nb):
