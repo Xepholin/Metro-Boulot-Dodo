@@ -45,30 +45,34 @@ class Vertex(object):
 class Graph(object):
     """Un graphe simple"""
 
-    def __init__(self, id = -1, vertrices = dict(), edges = dict(), edges_value = dict()) -> None:
+    def __init__(self, id = -1) -> None:
         self.id = id
-        self.vertrices = vertrices
-        self.edges = edges
-        self.edges_value = edges_value
+        self.vertices = dict()
+        self.edges = dict()
+        self.edges_value = dict()
+        self.vertex_nb = 0
 
     def get_id(self):
         return self.id
     
-    def get_vertrices(self):
-        return self.vertrices
+    def get_vertices(self):
+        return self.vertices
 
     def get_edges(self):
         return self.edges
 
     def get_edges_value(self):
         return self.edges_value
+
+    def get_vertex_nb(self):
+        return self.vertex_nb
     
     def set_id(self, id):
         self.id = id
         return self
 
-    def set_vertrices(self, vertrices):
-        self.vertrices = vertrices
+    def set_vertices(self, vertices):
+        self.vertices = vertices
         return self
     
     def set_edges(self, edges):
@@ -79,17 +83,22 @@ class Graph(object):
         self.edges_value = edges_value
         return self
 
+    def set_vertex_nb(self, nb):
+        self.vertex_nb = nb
+        return self
+
     def add_vertex(self, vertex):
-        if (isinstance(vertex, Vertex) and vertex not in self.vertrices.values()):
-            self.vertrices[vertex.id] = vertex
+        if (isinstance(vertex, Vertex) and vertex not in self.vertices.values()):
+            self.vertices[vertex.id] = vertex
+            self.vertex_nb += 1
             return True
         else:
             return False
 
     def find_couple(self, vertex1, vertex2):
-        if (vertex1 in self.vertrices and vertex2 in self.vertrices):
-            new_vertex1 = self.vertrices[vertex1]
-            new_vertex2 = self.vertrices[vertex2]
+        if (vertex1 in self.vertices and vertex2 in self.vertices):
+            new_vertex1 = self.vertices[vertex1]
+            new_vertex2 = self.vertices[vertex2]
             return new_vertex1, new_vertex2
         else:
             return 0
@@ -139,7 +148,32 @@ class Graph(object):
         else:
             return False
 
+    def DFS(self, visited, vertex):
+        visited[vertex] = "discovered"
+        for neighbor in vertex.neighbors:
+            if (neighbor not in visited):
+                self.DFS(visited, neighbor)
+
+        return len(visited)
+
+    def is_connected(self):
+        visited = dict()
+        visited = self.DFS(visited, list(self.vertices.values())[0])
+
+        if (visited == self.vertex_nb):
+            return True
+        else:
+            return False
+
+    def print_vertices(self):
+        for id, vertex in self.vertices.items():
+            print(id, vertex.name)
+
+    def print_neighbors(self):
+        for vertex in self.vertices.values():
+            vertex.print_vertex()
+            print("-->", vertex.get_neighbors())
 
     def print_graph(self):
-        for key in list(self.vertrices.keys()):
-            print(key + str(self.vertrices[key].neighbors))
+        for key in list(self.vertices.keys()):
+            print(key + str(self.vertices[key].neighbors))
