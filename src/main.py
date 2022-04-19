@@ -1,15 +1,12 @@
 from set import *
+from look import *
 
 graph = new_graph(1, "data.txt")
-
-if (graph.is_connected()):
-    print("graph : yes")
-else:
-    print("graph : no")
-
 graph_test = new_graph(2, "data2.txt")
+graph_test_test = new_graph(3, "data3.txt")
 
-if (graph_test.is_connected()):
-    print("graph_test : yes")
-else:
-    print("graph_test : no")
+graphs = [graph, graph_test, graph_test_test]
+
+for graph in graphs:
+    if (is_connected(graph)):
+        print("id :", graph.id)

@@ -7,6 +7,9 @@ class Vertex(object):
         self.name = name
         self.neighbors = []
 
+    def __str__(self):
+        return "Graph : {} | ID : {} | Name : {}".format(self.graph, self.id, self.name)
+
     def get_graph(self):
         return self.graph
 
@@ -38,9 +41,6 @@ class Vertex(object):
     def add_neighbor(self, vertex):
         if (vertex not in self.neighbors):
             self.neighbors.append(vertex)
-
-    def print_vertex(self):
-        print("Graph : {} | ID : {} | Name : {}".format(self.graph, self.id, self.name))
 
 class Graph(object):
     """Un graphe simple"""
@@ -156,22 +156,13 @@ class Graph(object):
 
         return len([vertex for vertex, discovered in visited.items() if discovered =="discovered"])
 
-    def is_connected(self):
-        visited = dict.fromkeys(self.vertices.values())
-        visited = self.DFS(visited, list(self.vertices.values())[0])
-
-        if (visited == self.vertex_nb):
-            return True
-        else:
-            return False
-
     def print_vertices(self):
-        for id, vertex in self.vertices.items():
-            print(id, vertex.name)
+        for vertex in self.vertices.values():
+            print(vertex)
 
     def print_neighbors(self):
         for vertex in self.vertices.values():
-            vertex.print_vertex()
+            print(vertex)
             print("-->", vertex.get_neighbors())
 
     def print_graph(self):
