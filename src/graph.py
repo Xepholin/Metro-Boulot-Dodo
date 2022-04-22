@@ -19,6 +19,7 @@ class Vertex(object):
     def get_name(self):
         return self.name
 
+    #TODO modifier get_neighbors pour une liste de voisin, et déplacer la version actuelle pour un print()
     def get_neighbors(self):
         return [{vertex.id : vertex.name} for vertex in self.neighbors]
 
@@ -50,7 +51,6 @@ class Graph(object):
         self.vertices = dict()
         self.edges = dict()
         self.edges_value = dict()
-        self.vertex_nb = 0
 
     def get_id(self):
         return self.id
@@ -63,9 +63,6 @@ class Graph(object):
 
     def get_edges_value(self):
         return self.edges_value
-
-    def get_vertex_nb(self):
-        return self.vertex_nb
     
     def set_id(self, id):
         self.id = id
@@ -83,17 +80,26 @@ class Graph(object):
         self.edges_value = edges_value
         return self
 
-    def set_vertex_nb(self, nb):
-        self.vertex_nb = nb
-        return self
+    def len_vertices(self):
+        return len(self.vertices)
+
+    def len_edges(self):
+        return len(self.edges)
+
+    def len_edges_value(self):
+        return len(self.edges_value)
 
     def add_vertex(self, vertex):
         if (isinstance(vertex, Vertex) and vertex not in self.vertices.values()):
             self.vertices[vertex.id] = vertex
-            self.vertex_nb += 1
             return True
         else:
             return False
+
+    def find_vertex(self, id):
+        for vertex in self.vertices.values():
+            if (vertex.get_id() == id):
+                return vertex
 
     def find_couple(self, vertex1, vertex2):
         if (vertex1 in self.vertices and vertex2 in self.vertices):
@@ -102,51 +108,72 @@ class Graph(object):
             return new_vertex1, new_vertex2
         else:
             return 0
-            
-    def add_edge(self, vertex1, vertex2):
-        couple = self.find_couple(vertex1, vertex2)
-        new_vertex1, new_vertex2 = couple
-        if (couple):
-            self.edges[len(self.edges)] = couple
-            new_vertex1.add_neighbor(new_vertex2)
-            new_vertex2.add_neighbor(new_vertex1)
-            return True
-            
-        else:
-            return False
-            
 
     def find_edge(self, couple):
+        temp = []
         if (isinstance(couple, tuple)):
             vertex1, vertex2 = couple
             if (isinstance(vertex1, Vertex) and isinstance(vertex2, Vertex)):
-                if (couple in self.edges.values()):
-                    for key, value in self.edges.items():
-                        if (value == couple):
-                            return key
+
+                for key, value in self.edges.items():
+                    if (vertex1 not in value or vertex2 not in value):
+                        continue
+                    else:
+                        temp.append(key)
+                
+                if (len(temp) == 0):    # Cas où il n'y a pas d'arete trouvé
+                    return -2
+                elif (len(temp) > 1):   # Cas où il y a plusieurs aretes trouvés possèdant les mêmes sommets
+                    return -3
                 else:
-                    return -1
+                    return temp[0]
             else:
                 return -1
+        else:
+            return -1
+            
+    def add_edge(self, vertex1, vertex2):
+        couple = self.find_couple(vertex1, vertex2)
 
-    def add_edge_value(self, couple, time):
-        new_vertex1, new_vertex2 = couple
-        for vertex1, vertex2 in self.edges.values():
-            if (vertex1.get_id() == new_vertex1 and vertex2.get_id() == new_vertex2):
-                new_vertex1 = vertex1
-                new_vertex2 = vertex2
-
-        if (isinstance(new_vertex1, Vertex) and isinstance(new_vertex2, Vertex)):
-            new_couple = new_vertex1, new_vertex2
-            index = self.find_edge(new_couple)
-
-            if (index == -1):
-                return False
-            else:
-                self.edges_value[index] = time
-                return True
+        if (couple and self.find_edge(couple) == -2):
+            new_vertex1, new_vertex2 = couple
+            self.edges[len(self.edges)] = [new_vertex1, new_vertex2]
+            new_vertex1.add_neighbor(new_vertex2)
+            new_vertex2.add_neighbor(new_vertex1)
+            return True
         else:
             return False
+
+    def add_edge_value(self, couple, time):
+        temp = []
+        if (isinstance(couple, tuple)):
+            new_vertex1, new_vertex2 = couple
+
+            new_vertex1 = self.find_vertex(new_vertex1)
+            new_vertex2 = self.find_vertex(new_vertex2)
+
+            for key, value in self.edges.items():
+                if (new_vertex1 not in value or new_vertex2 not in value):
+                    continue
+                else:
+                    new_couple = new_vertex1, new_vertex2
+                    index = self.find_edge(new_couple)
+
+                    if (index < 0):
+                        return False
+                    else:
+                        self.edges_value[index] = time
+                        return True
+        else:
+            return False
+
+    def find_edge_value(self, couple):
+        id = self.find_edge(couple)
+
+        if (id < 0):
+            return -1
+        else:
+            return self.edges_value.get(id)
 
     def DFS(self, visited, vertex):
         visited[vertex] = "discovered"
@@ -155,6 +182,55 @@ class Graph(object):
                 self.DFS(visited, neighbor)
 
         return len([vertex for vertex, discovered in visited.items() if discovered =="discovered"])
+
+    def dijkstra(self, start_vertex):
+        if (isinstance(start_vertex, Vertex)):
+            if (start_vertex not in self.vertices.values()):
+                return -1
+            else:
+                previous_min_path = dict()
+                min_path = dict()
+                visited = [start_vertex]
+                discard = []
+                list_cost = []
+
+                for vertex in self.vertices.values():
+                    previous_min_path[vertex] = start_vertex, 100**100          # infinite
+                
+                min_path[start_vertex] = 0
+                previous_min_path[start_vertex] = start_vertex, 0
+
+                while (len(min_path) != self.len_vertices()):
+                    temp, actual_time = list(min_path[len(min_path)-1])
+                    for vertex in min_path:
+                        for neighbor in vertex.neighbors:
+                            if (neighbor not in min_path and neighbor not in discard):
+                                edge_time = self.find_edge_value((vertex, neighbor))
+                                visited.append(neighbor)
+                                new_cost = actual_time + edge_time
+                                previous_min_path[neighbor] = vertex, new_cost
+                                list_cost.append(new_cost)
+                            elif (neighbor in min_path and neighbor not in discard):
+                                pre_vertex, time = list(previous_min_path[neighbor])
+                                if (time > actual_time + edge_time):
+                                    previous_min_path[neighbor] = vertex, cost + new_cost
+                        
+                    cost += min(list_cost)
+
+                    for key, value in previous_min_path.items():
+                        pre_vertex, time = value
+                        if (time == cost):
+                            min_path[key] = cost
+                            discard.append(vertex)
+                            previous_min_path.pop(key)
+                            break
+                    print(vertex.name)
+                    
+                    print(previous_min_path)
+            
+                return min_path
+        else:
+            return -1
 
     def print_vertices(self):
         for vertex in self.vertices.values():
@@ -165,6 +241,5 @@ class Graph(object):
             print(vertex)
             print("-->", vertex.get_neighbors())
 
-    def print_graph(self):
-        for key in list(self.vertices.keys()):
-            print(key + str(self.vertices[key].neighbors))
+    
+

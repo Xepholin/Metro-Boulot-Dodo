@@ -7,6 +7,6 @@ graph_test_test = new_graph(3, "data3.txt")
 
 graphs = [graph, graph_test, graph_test_test]
 
-for graph in graphs:
-    if (is_connected(graph)):
-        print("id :", graph.id)
+min_path = graph_test_test.dijkstra(list(graph_test_test.vertices.values())[0])
+
+print(min_path)
