@@ -6,9 +6,10 @@ class Vertex(object):
         self.id = id
         self.name = name
         self.neighbors = []
+        self.line = []
 
     def __str__(self):
-        return "Graph : {} | ID : {} | Name : {}".format(self.graph, self.id, self.name)
+        return "Graph : {} | ID : {} | Name : {} | Ligne : {}".format(self.graph, self.id, self.name, self.line)
 
     def get_graph(self):
         return self.graph
@@ -22,6 +23,9 @@ class Vertex(object):
     #TODO modifier get_neighbors pour une liste de voisin, et déplacer la version actuelle pour un print()
     def get_neighbors(self):
         return [{vertex.id : vertex.name} for vertex in self.neighbors]
+
+    def get_line(self):
+        return self.line
 
     def set_graph(self, graph):
         self.graph = graph
@@ -38,6 +42,12 @@ class Vertex(object):
     def set_neighbors(self, list):
         self.neighbors = list
         return self
+
+    def set_line(self,newline):
+        self.line = newline
+
+    def add_line(self, line):
+        self.line.append(line)
 
     def add_neighbor(self, vertex):
         if (vertex not in self.neighbors):

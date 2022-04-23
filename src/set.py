@@ -2,7 +2,7 @@ from graph import *
 from parse import *
 
 def new_vertices_edges(graphID, file):
-    temp, edges = parse(file)
+    temp, edges, line = parse(file)
 
     vertices = [Vertex() for i in range(len(temp))]
 
@@ -12,8 +12,17 @@ def new_vertices_edges(graphID, file):
         vertices[i].set_graph(graphID)
         vertices[i].set_id(id)
         vertices[i].set_name(name)
+
         i += 1
     
+    for vertex in vertices:
+        for num_line, list_vertex in line.items():
+            for id in list_vertex:
+                if vertex.get_id() == id:
+                    print("metal gear")
+                    vertex.add_line(num_line)
+        
+  
     return vertices, edges
 
 def new_graph(id, file):
