@@ -181,13 +181,57 @@ class Graph(object):
             if (visited[neighbor] is None):
                 self.DFS(visited, neighbor)
 
-        return len([vertex for vertex, discovered in visited.items() if discovered =="discovered"])
+        return len([vertex for vertex, discovered in visited.items() if discovered == "discovered"])
 
     def dijkstra(self, start_vertex):
         if (isinstance(start_vertex, Vertex)):
             if (start_vertex not in self.vertices.values()):
                 return -1
             else:
+                unvisited = [vertex for vertex in self.vertices.values()]
+                min_path = dict()
+                previous_vertex_cost = dict()
+                final_pre_vertex_cost = dict()
+                min_path[start_vertex] = 0
+                actual_cost = 0
+
+                for vertex in unvisited:
+                    previous_vertex_cost[vertex] = 2048, start_vertex 
+
+                previous_vertex_cost[start_vertex] = 0, start_vertex
+                final_pre_vertex_cost[start_vertex] = 0, start_vertex
+
+                while (unvisited):
+                    for vertex in min_path:
+                        for neighbor in vertex.neighbors:
+                            if (neighbor in unvisited and neighbor not in min_path):
+                                if (neighbor not in previous_vertex_cost):
+                                    previous_vertex_cost[neighbor] = actual_cost + self.find_edge_value((vertex, neighbor)), vertex
+                                else:
+                                    if (previous_vertex_cost[neighbor][0] > actual_cost + self.find_edge_value((vertex, neighbor))):
+                                        previous_vertex_cost[neighbor] = actual_cost + self.find_edge_value((vertex, neighbor)), vertex
+                                    else:
+                                        continue
+                            else:
+                                continue
+                    
+                    actual_cost = list(previous_vertex_cost.values())[0][0]
+                    min_vertex = list(previous_vertex_cost.keys())[0]
+
+                    for vertex, values in previous_vertex_cost.items():
+                        cost, pre_vertex = values
+                        if (cost < actual_cost):
+                            actual_cost = cost
+                            min_vertex = vertex
+
+                    min_path[min_vertex] = actual_cost
+                    final_pre_vertex_cost[min_vertex] = previous_vertex_cost.get(min_vertex)
+                    unvisited.remove(list(min_path.keys())[-1])
+                    previous_vertex_cost.pop(min_vertex)
+
+                return min_path, final_pre_vertex_cost
+
+                """
                 previous_min_path = dict()
                 min_path = dict()
                 visited = [start_vertex]
@@ -229,6 +273,7 @@ class Graph(object):
                     print(previous_min_path)
             
                 return min_path
+                """
         else:
             return -1
 

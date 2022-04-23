@@ -6,7 +6,3 @@ graph_test = new_graph(2, "data2.txt")
 graph_test_test = new_graph(3, "data3.txt")
 
 graphs = [graph, graph_test, graph_test_test]
-
-min_path = graph_test_test.dijkstra(list(graph_test_test.vertices.values())[0])
-
-print(min_path)

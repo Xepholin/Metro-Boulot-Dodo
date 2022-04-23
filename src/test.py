@@ -1,6 +1,3 @@
-a = dict()
-a[0] = 'a', 'b'
-
-b, c = list(a[0])
-
-print(b)
+a = [0, 1, 2]
+a = a[2:]
+print(a)
