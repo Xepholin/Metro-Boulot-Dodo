@@ -230,50 +230,6 @@ class Graph(object):
                     previous_vertex_cost.pop(min_vertex)
 
                 return min_path, final_pre_vertex_cost
-
-                """
-                previous_min_path = dict()
-                min_path = dict()
-                visited = [start_vertex]
-                discard = []
-                list_cost = []
-
-                for vertex in self.vertices.values():
-                    previous_min_path[vertex] = start_vertex, 100**100          # infinite
-                
-                min_path[start_vertex] = 0
-                previous_min_path[start_vertex] = start_vertex, 0
-
-                while (len(min_path) != self.len_vertices()):
-                    temp, actual_time = list(min_path[len(min_path)-1])
-                    for vertex in min_path:
-                        for neighbor in vertex.neighbors:
-                            if (neighbor not in min_path and neighbor not in discard):
-                                edge_time = self.find_edge_value((vertex, neighbor))
-                                visited.append(neighbor)
-                                new_cost = actual_time + edge_time
-                                previous_min_path[neighbor] = vertex, new_cost
-                                list_cost.append(new_cost)
-                            elif (neighbor in min_path and neighbor not in discard):
-                                pre_vertex, time = list(previous_min_path[neighbor])
-                                if (time > actual_time + edge_time):
-                                    previous_min_path[neighbor] = vertex, cost + new_cost
-                        
-                    cost += min(list_cost)
-
-                    for key, value in previous_min_path.items():
-                        pre_vertex, time = value
-                        if (time == cost):
-                            min_path[key] = cost
-                            discard.append(vertex)
-                            previous_min_path.pop(key)
-                            break
-                    print(vertex.name)
-                    
-                    print(previous_min_path)
-            
-                return min_path
-                """
         else:
             return -1
 
