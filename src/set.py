@@ -2,9 +2,10 @@ from graph import *
 from parse import *
 
 def new_vertices_edges(graphID, file):
-    temp, edges, line = parse(file)
+    temp, edges, temp2, temp3 = parse(file) 
 
-    vertices = [Vertex() for i in range(len(temp))]
+    vertices = [Vertex() for i in range (len(temp))]
+    lines = [Line() for i in range (len(temp2))]
 
     i = 0
 
@@ -15,14 +16,33 @@ def new_vertices_edges(graphID, file):
 
         i += 1
     
+    j = 0
+
+    for name, list in temp2.items():
+        lines[j].set_name(name)
+        lines[j].set_stations(list)
+
+        j += 1
+
     for vertex in vertices:
-        for num_line, list_vertex in line.items():
-            for id in list_vertex:
-                if vertex.get_id() == id:
-                    print("metal gear")
-                    vertex.add_line(num_line)
-        
-  
+        for line in lines:
+            for id in line.stations:
+                if (id == vertex.get_id()):
+                    vertex.set_line(line)
+
+    for list_vertex_id in temp3.values():
+        for vertex in vertices:
+            for vertex_id in list_vertex_id:
+                if (vertex.get_id() == vertex_id):
+                    list_vertex_id[list_vertex_id.index(vertex_id)] = vertex
+
+    for name, list_station in temp3.items():
+        for i in range (len(lines)):
+            if (lines[i].name == name):
+                for vertex in list_station:
+                    lines[i].set_terminus(list_station)
+
+
     return vertices, edges
 
 def new_graph(id, file):

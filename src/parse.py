@@ -2,6 +2,7 @@ def parse(file):
     vertices = dict()
     edges = dict()
     ligne = dict()
+    terminus = dict()
 
     with open(file, 'r') as data:
         for line in data:
@@ -16,9 +17,13 @@ def parse(file):
             elif (line.startswith('L')):
                 number = parse_line(line)
                 ligne[number[0]] = number[1:]
+            elif (line.startswith('T')):
+                number = parse_terminus(line)
+                terminus[number[0]] = number[1:]
             else:
                 continue
-    return vertices, edges, ligne
+            
+    return vertices, edges, ligne, terminus
 
 def parse_vertex(string):
     buff = string.split(" ")
@@ -29,7 +34,7 @@ def parse_vertex(string):
         name = name + " " + buff[i]
     
     name = name[:-1].rstrip().lstrip()
-    name = rename(name)
+    name = rename(name).lower()
     
     return name, number
 
@@ -45,10 +50,28 @@ def parse_line(string):
     buff = string.split(" ")
     del buff[0]  
     tmp = buff[-1]
-    del buff[-1]
-    buff.append(tmp[:-1])
+    if (tmp[-1] == '\n'):
+        del buff[-1]
+        buff.append(tmp[:-1])
+
+    for i in range (1, len(buff)):
+        buff[i] = int(buff[i])
+
+    return buff
+
+def parse_terminus(string):
+    buff = string.split(" ")
+    del buff[0]
+    tmp = buff[-1]
+    if (tmp[-1] == '\n'):
+        del buff[-1]
+        buff.append(tmp[:-1])
+
+    for i in range (1, len(buff)):
+        buff[i] = int(buff[i])
+    
     return buff
     
 def rename(name):
-    name = name.replace('Ã©', 'e').replace('Ã‰', 'E').replace('Ã¨', 'e').replace('Ã§', 'c').replace('Ã¢', 'a').replace('Ã´', 'o').replace('Ãª', 'e').replace('Ã®', 'i')
+    name = name.replace('Ã©', 'e').replace('Ã‰', 'E').replace('Ã¨', 'e').replace('Ã§', 'c').replace('Ã¢', 'a').replace('Ã´', 'o').replace('Ãª', 'e').replace('Ã®', 'i').replace('é', 'e').replace('è', 'e').replace('à', 'a').replace('â', 'a').replace('ê', 'e').replace('û', 'u').replace('î', 'i').replace('ô', 'o').replace('ç', 'c').replace('ù', 'u').replace('À', 'A').replace('É', 'E').replace('È', 'E').replace('Ç', 'C')
     return name

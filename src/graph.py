@@ -1,3 +1,32 @@
+class Line(object):
+    """Une ligne de métro contenenant le nom de la ligne et les ID des sommets qu'il possède"""
+
+    def __init__(self, name = "", stations_list = [], terminus_list = []) -> None:
+        self.name = name
+        self.stations = stations_list
+        self.terminus = terminus_list
+
+    def get_name(self):
+        return self.name
+
+    def get_stations(self):
+        return self.stations
+
+    def get_terminus(self):
+        return self.terminus
+
+    def set_name(self, name):
+        self.name = name
+
+    def set_stations(self, stations_list):
+        self.stations = stations_list
+
+    def set_terminus(self, terminus_list):
+        self.terminus = terminus_list
+
+    def add_terminus(self, station):
+        self.terminus.append(station)
+        
 class Vertex(object):
     """Un sommet d'un graphe"""
 
@@ -6,10 +35,10 @@ class Vertex(object):
         self.id = id
         self.name = name
         self.neighbors = []
-        self.line = []
+        self.line = None
 
     def __str__(self):
-        return "Graph : {} | ID : {} | Name : {} | Ligne : {}".format(self.graph, self.id, self.name, self.line)
+        return "Graph : {} | ID : {} | Name : {} | Ligne : {}".format(self.graph, self.id, self.name, self.line.name)
 
     def get_graph(self):
         return self.graph
@@ -20,7 +49,7 @@ class Vertex(object):
     def get_name(self):
         return self.name
 
-    #TODO modifier get_neighbors pour une liste de voisin, et déplacer la version actuelle pour un print()
+    #TODO modifier get_neighbors() pour une liste de voisin, et déplacer la version actuelle pour un print()
     def get_neighbors(self):
         return [{vertex.id : vertex.name} for vertex in self.neighbors]
 
@@ -29,25 +58,18 @@ class Vertex(object):
 
     def set_graph(self, graph):
         self.graph = graph
-        return self
 
     def set_id(self, id):
         self.id = id
-        return self
     
     def set_name(self, name):
         self.name = name
-        return self
 
     def set_neighbors(self, list):
         self.neighbors = list
-        return self
 
     def set_line(self,newline):
         self.line = newline
-
-    def add_line(self, line):
-        self.line.append(line)
 
     def add_neighbor(self, vertex):
         if (vertex not in self.neighbors):
@@ -76,19 +98,15 @@ class Graph(object):
     
     def set_id(self, id):
         self.id = id
-        return self
 
     def set_vertices(self, vertices):
         self.vertices = vertices
-        return self
     
     def set_edges(self, edges):
         self.edges = edges
-        return self
     
     def set_edges_value(self, edges_value):
         self.edges_value = edges_value
-        return self
 
     def len_vertices(self):
         return len(self.vertices)
@@ -243,6 +261,65 @@ class Graph(object):
         else:
             return -1
 
+    def min_path(self, departure, arrived):
+        all_path_cost, final_path = self.dijkstra(departure)
+
+        for vertex, cost in all_path_cost.items():
+            if (vertex == arrived):
+                time = int(cost / 60) + 1
+                break
+
+        path = []
+        path.append(arrived)
+
+        while (departure not in path):
+            for final_vertex, couple in final_path.items():
+                if (path[-1] == final_vertex):
+                    path.append(couple[1])
+        
+        path.reverse()
+
+        return path, time
+
+    def travel(self, departure, arrived):
+        path, time = self.min_path(departure, arrived)
+        text = ""
+
+        text = text + "- Départ : " + path[0].name.title() + ".\n"
+
+        if (path[0].name == path[1].name and len(path[1].line.terminus) == 2):
+            if (path[1].line.stations.index(path[1].id) - path[2].line.stations.index(path[2].id) > 0):
+                text = text + "- Prenez la ligne " + path[1].line.name.title() + " direction " + path[1].line.terminus[0].name.title() + ".\n"
+            elif (path[1].line.stations.index(path[1].id) - path[2].line.stations.index(path[2].id) < 0):
+                text = text + "- Prenez la ligne " + path[1].line.name.title() + " direction " + path[1].line.terminus[1].name.title() + ".\n"
+            else:
+                return 0
+
+            for i in range (1, len(path)-1):
+                if (path[i].name == path[i+1].name and len(path[i+1].line.terminus) == 2):
+                    if (path[i+1].line.stations.index(path[i+1].id) - path[i+2].line.stations.index(path[i+2].id) > 0):
+                        text = text + "- À " + path[i].name.title() + ", changez et prenez la ligne " + path[i+1].line.name.title() + " direction " + path[i+1].line.terminus[0].name + ".\n"
+                    elif (path[i+1].line.stations.index(path[i+1].id) - path[i+2].line.stations.index(path[i+2].id) < 0):
+                        text = text + "- À " + path[i].name.title() + ", changez et prenez la ligne " + path[i+1].line.name.title() + " direction " + path[i+1].line.terminus[1].name + ".\n"
+        elif (path[0].name != path[1].name):
+            if (path[0].line.stations.index(path[0].id) - path[1].line.stations.index(path[1].id) > 0):
+                text = text + "- Prenez la ligne " + path[1].line.name.title() + " direction " + path[1].line.terminus[0].name.title() + ".\n"
+            elif (path[0].line.stations.index(path[0].id) - path[1].line.stations.index(path[1].id) < 0):
+                text = text + "- Prenez la ligne " + path[0].line.name.title() + " direction " + path[0].line.terminus[0].name.title() + ".\n"
+            else:
+                return 0
+
+            for i in range (len(path)-1):
+                if (path[i].name == path[i+1].name and len(path[i+1].line.terminus) == 2):
+                    if (path[i+1].line.stations.index(path[i+1].id) - path[i+2].line.stations.index(path[i+2].id) > 0):
+                        text = text + "- À " + path[i].name.title() + ", changez et prenez la ligne " + path[i+1].line.name.title() + " direction " + path[i+1].line.terminus[0].name.title() + ".\n"
+                    elif (path[i+1].line.stations.index(path[i+1].id) - path[i+2].line.stations.index(path[i+2].id) < 0):
+                        text = text + "- À " + path[i].name.title() + ", changez et prenez la ligne " + path[i+1].line.name.title() + " direction " + path[i+1].line.terminus[1].name.title() + ".\n"
+
+        text = text + "- Vous devriez arriver à " + arrived.name.title() + " dans " + str(time) + " minutes."
+
+        print(text)
+
     def print_vertices(self):
         for vertex in self.vertices.values():
             print(vertex)
@@ -251,6 +328,3 @@ class Graph(object):
         for vertex in self.vertices.values():
             print(vertex)
             print("-->", vertex.get_neighbors())
-
-    
-
