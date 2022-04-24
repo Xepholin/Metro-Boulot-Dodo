@@ -298,9 +298,9 @@ class Graph(object):
             for i in range (1, len(path)-1):
                 if (path[i].name == path[i+1].name and len(path[i+1].line.terminus) == 2):
                     if (path[i+1].line.stations.index(path[i+1].id) - path[i+2].line.stations.index(path[i+2].id) > 0):
-                        text = text + "- À " + path[i].name.title() + ", changez et prenez la ligne " + path[i+1].line.name.title() + " direction " + path[i+1].line.terminus[0].name + ".\n"
+                        text = text + "- À " + path[i].name.title() + ", changez et prenez la ligne " + path[i+1].line.name.title() + " direction " + path[i+1].line.terminus[0].name.title() + ".\n"
                     elif (path[i+1].line.stations.index(path[i+1].id) - path[i+2].line.stations.index(path[i+2].id) < 0):
-                        text = text + "- À " + path[i].name.title() + ", changez et prenez la ligne " + path[i+1].line.name.title() + " direction " + path[i+1].line.terminus[1].name + ".\n"
+                        text = text + "- À " + path[i].name.title() + ", changez et prenez la ligne " + path[i+1].line.name.title() + " direction " + path[i+1].line.terminus[1].name.title() + ".\n"
         elif (path[0].name != path[1].name):
             if (path[0].line.stations.index(path[0].id) - path[1].line.stations.index(path[1].id) > 0):
                 text = text + "- Prenez la ligne " + path[1].line.name.title() + " direction " + path[1].line.terminus[0].name.title() + ".\n"

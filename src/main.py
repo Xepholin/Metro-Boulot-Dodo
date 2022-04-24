@@ -23,6 +23,10 @@ if __name__ == "__main__":
             elif (arrived_name == vertex.get_name()):
                 arrived = vertex
 
-        graph.travel(departure, arrived)
+        if (is_connected(graph)):
+            graph.travel(departure, arrived)
+        else:
+            print("Graph is not connected")
+            exit(1)
 
         exit(0)
