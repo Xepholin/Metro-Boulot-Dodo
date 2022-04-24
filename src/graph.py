@@ -25,6 +25,12 @@ class Line(object):
         self.terminus = terminus_list
 
     def add_terminus(self, station):
+        """Add a terminus
+        
+        Keyword arguments:
+        station -- an object of class Vertex(), terminus of the line
+        """
+
         self.terminus.append(station)
         
 class Vertex(object):
@@ -71,9 +77,15 @@ class Vertex(object):
     def set_line(self,newline):
         self.line = newline
 
-    def add_neighbor(self, vertex):
-        if (vertex not in self.neighbors):
-            self.neighbors.append(vertex)
+    def add_neighbor(self, neighbor):
+        """Add a neighbor
+        
+        Keyword arguments:
+        neighbor -- an object of class Vertex(), neighbor of vertex
+        """
+
+        if (neighbor not in self.neighbors):
+            self.neighbors.append(neighbor)
 
 class Graph(object):
     """Un graphe simple"""
@@ -118,6 +130,16 @@ class Graph(object):
         return len(self.edges_value)
 
     def add_vertex(self, vertex):
+        """Add a vertex.
+
+        Keyword arguments:
+        vertex -- an object of class Vertex()
+
+        Return value:
+        --> True if successful
+        --> False if failed
+        """
+
         if (isinstance(vertex, Vertex) and vertex not in self.vertices.values()):
             self.vertices[vertex.id] = vertex
             return True
@@ -125,11 +147,31 @@ class Graph(object):
             return False
 
     def find_vertex(self, id):
+        """Find an object of class Vertex().
+        
+        Keyword arguments:
+        id -- type int of the vertex sought
+
+        Return value:
+        --> object class Vertex()
+        """
+
         for vertex in self.vertices.values():
             if (vertex.get_id() == id):
                 return vertex
 
     def find_couple(self, vertex1, vertex2):
+        """Find a couple of two class Vertex().
+        
+        Keyword arguments:
+        first_vertex  -- an object of class Vertex()
+        second_vertex -- an object of class Vertex()
+
+        Return value:
+        --> tuple of 2 object of class Vertex()
+        --> 0 if couple didn't find
+        """
+
         if (vertex1 in self.vertices and vertex2 in self.vertices):
             new_vertex1 = self.vertices[vertex1]
             new_vertex2 = self.vertices[vertex2]
@@ -138,17 +180,28 @@ class Graph(object):
             return 0
 
     def find_edge(self, couple):
+        """Find an edge.
+
+        Keyword arguments:
+        couple -- tuple of 2 object of class Vertex()
+
+        Return value
+        --> type int of id of edge found
+        --> -2 if edge didn't found
+        --> -3 if more than one edge was found
+        --> -1 otherwise
+        """
+
         temp = []
         if (isinstance(couple, tuple)):
             vertex1, vertex2 = couple
             if (isinstance(vertex1, Vertex) and isinstance(vertex2, Vertex)):
-
                 for key, value in self.edges.items():
                     if (vertex1 not in value or vertex2 not in value):
                         continue
                     else:
                         temp.append(key)
-                
+
                 if (len(temp) == 0):    # Cas où il n'y a pas d'arete trouvé
                     return -2
                 elif (len(temp) > 1):   # Cas où il y a plusieurs aretes trouvés possèdant les mêmes sommets
@@ -161,6 +214,17 @@ class Graph(object):
             return -1
             
     def add_edge(self, vertex1, vertex2):
+        """Add an edge.
+
+        Keyword arguments:
+        first_vertex -- an object of class Vertex()
+        second_vertex -- an object of class Vertex()
+
+        Return value:
+        --> True if successful
+        --> False if failed
+        """
+
         couple = self.find_couple(vertex1, vertex2)
 
         if (couple and self.find_edge(couple) == -2):
@@ -173,6 +237,17 @@ class Graph(object):
             return False
 
     def add_edge_value(self, couple, time):
+        """Add the value of edge.
+        
+        Keyword arguments:
+        couple -- tuple of 2 object of class Vertex()
+        time   -- value of the edge
+
+        Return value:
+        --> True if successful
+        --> False if failed
+        """
+
         temp = []
         if (isinstance(couple, tuple)):
             new_vertex1, new_vertex2 = couple
@@ -196,6 +271,16 @@ class Graph(object):
             return False
 
     def find_edge_value(self, couple):
+        """Find the value of an edge.
+        
+        Keyword arguments:
+        couple -- tuple of 2 object of class Vertex()
+
+        Return value:
+        --> the value of the edge
+        --> -1 if the edge was not found
+        """
+
         id = self.find_edge(couple)
 
         if (id < 0):
@@ -204,6 +289,13 @@ class Graph(object):
             return self.edges_value.get(id)
 
     def DFS(self, visited, vertex):
+        """Depth First Search Recursive.
+
+        Keyword arguments:
+        visited -- a list of discovered vertex
+        vertex  -- an object of class Vertex()
+        """
+
         visited[vertex] = "discovered"
         for neighbor in vertex.neighbors:
             if (visited[neighbor] is None):
@@ -212,6 +304,17 @@ class Graph(object):
         return len([vertex for vertex, discovered in visited.items() if discovered == "discovered"])
 
     def dijkstra(self, start_vertex):
+        """Dijkstra Algorithm.
+        
+        Keyword arguments:
+        start_vertex -- an object of class Vertex()
+
+        Return value:
+        --> two dictionaries : - minimum cost from the start vertex for each vertex
+                               - the cost from vertex for their previous vertex
+        --> -1 if failed
+        """
+
         if (isinstance(start_vertex, Vertex)):
             if (start_vertex not in self.vertices.values()):
                 return -1
@@ -262,6 +365,16 @@ class Graph(object):
             return -1
 
     def min_path(self, departure, arrived):
+        """Search the path and the cost.
+        
+        Keyword arguments:
+        departure -- an object of class Vertex()
+        arrived   -- an object of class Vertex()
+
+        Return value:
+        --> the path (type of list) and the cost (type of int) from departure to arrival
+        """
+
         all_path_cost, final_path = self.dijkstra(departure)
 
         for vertex, cost in all_path_cost.items():
@@ -282,6 +395,13 @@ class Graph(object):
         return path, time
 
     def travel(self, departure, arrived):
+        """Print travel text.
+        
+        Keyword arguments:
+        departure -- an object of class Vertex()
+        arrived   -- an object of class Vertex()
+        """
+
         path, time = self.min_path(departure, arrived)
         text = ""
 

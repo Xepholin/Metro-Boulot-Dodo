@@ -1,4 +1,16 @@
 def parse(file):
+    """Parse from a file
+    
+    Keyword arguments:
+    file -- the path of a file with data
+
+    Return value:
+    --> 4 dictionaries : - vertices {id : name}
+                         - edges    {[first_vertex, second_vertex] : cost}
+                         - lines    {name : [vertices]}
+                         - terminus {name : [vertices]}
+    """
+
     vertices = dict()
     edges = dict()
     ligne = dict()

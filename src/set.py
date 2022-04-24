@@ -1,7 +1,17 @@
 from graph import *
 from parse import *
 
-def new_vertices_edges(graphID, file):
+def new_vertices_edges_lines(graphID, file):
+    """Create a list of new vertices, edges, lines
+    
+    Keyword arguments:
+    graphID -- type int which is add for vertices data
+    file    -- the path of a file with data
+
+    Return value:
+    --> - list of object of class Vertex()
+        - edges with dictionary format 
+    """
     temp, edges, temp2, temp3 = parse(file) 
 
     vertices = [Vertex() for i in range (len(temp))]
@@ -42,11 +52,20 @@ def new_vertices_edges(graphID, file):
                 for vertex in list_station:
                     lines[i].set_terminus(list_station)
 
-
     return vertices, edges
 
 def new_graph(id, file):
-    vertices, edges = new_vertices_edges(id, file)
+    """Create a graph
+    
+    Keyword arguments:
+    id   -- type int for the id of the new graph
+    file -- the path of a file with data
+
+    Return value:
+    --> object of class Graph()
+    """
+
+    vertices, edges = new_vertices_edges_lines(id, file)
 
     new_graph = Graph(id)
 
