@@ -389,13 +389,18 @@ class Graph(object):
             for final_vertex, couple in final_path.items():
                 if (path[-1] == final_vertex):
                     path.append(couple[1])
-        
+                    
         path.reverse()
 
         if (path[0].name == path[1].name):
             sec_to_min = int(self.find_edge_value((path[0],path[1]))/60)
             time -= sec_to_min
             path.pop(0)
+
+        if (path[-2].name == path[-1].name):
+            sec_to_min = int(self.find_edge_value((path[-2],path[-1]))/60)
+            time -= sec_to_min
+            path.pop(-1)
 
         return path, time
 
@@ -422,6 +427,7 @@ class Graph(object):
 
             for i in range (1, len(path)-1):
                 if (path[i].name == path[i+1].name):
+                    
                     if (path[i+1].line.stations.index(path[i+1].id) - path[i+2].line.stations.index(path[i+2].id) > 0):
                         text = text + "- À " + path[i].name.title() + ", changez et prenez la ligne " + path[i+1].line.name.title() + " direction " + path[i+1].line.terminus[0].name.title() + ".\n"
                     elif (path[i+1].line.stations.index(path[i+1].id) - path[i+2].line.stations.index(path[i+2].id) < 0):
