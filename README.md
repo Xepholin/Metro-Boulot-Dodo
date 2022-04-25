@@ -1,7 +1,7 @@
 # Metro-Boulot-Dodo
 Projet Algorithmique de Graphes 2022
 
-Rapport Projet Algorithmie des Graphes
+<ins>Rapport Projet Algorithmie des Graphes</ins>
 
 Notre projet est découper en plusieurs fichiers :
 
