@@ -392,6 +392,11 @@ class Graph(object):
         
         path.reverse()
 
+        if (path[0].name == path[1].name):
+            sec_to_min = int(self.find_edge_value((path[0],path[1]))/60)
+            time -= sec_to_min
+            path.pop(0)
+
         return path, time
 
     def travel(self, departure, arrived):
@@ -407,7 +412,7 @@ class Graph(object):
 
         text = text + "- Départ : " + path[0].name.title() + ".\n"
 
-        if (path[0].name == path[1].name and len(path[1].line.terminus) == 2):
+        if (path[0].name == path[1].name):
             if (path[1].line.stations.index(path[1].id) - path[2].line.stations.index(path[2].id) > 0):
                 text = text + "- Prenez la ligne " + path[1].line.name.title() + " direction " + path[1].line.terminus[0].name.title() + ".\n"
             elif (path[1].line.stations.index(path[1].id) - path[2].line.stations.index(path[2].id) < 0):
@@ -416,7 +421,7 @@ class Graph(object):
                 return 0
 
             for i in range (1, len(path)-1):
-                if (path[i].name == path[i+1].name and len(path[i+1].line.terminus) == 2):
+                if (path[i].name == path[i+1].name):
                     if (path[i+1].line.stations.index(path[i+1].id) - path[i+2].line.stations.index(path[i+2].id) > 0):
                         text = text + "- À " + path[i].name.title() + ", changez et prenez la ligne " + path[i+1].line.name.title() + " direction " + path[i+1].line.terminus[0].name.title() + ".\n"
                     elif (path[i+1].line.stations.index(path[i+1].id) - path[i+2].line.stations.index(path[i+2].id) < 0):
@@ -430,7 +435,7 @@ class Graph(object):
                 return 0
 
             for i in range (len(path)-1):
-                if (path[i].name == path[i+1].name and len(path[i+1].line.terminus) == 2):
+                if (path[i].name == path[i+1].name):
                     if (path[i+1].line.stations.index(path[i+1].id) - path[i+2].line.stations.index(path[i+2].id) > 0):
                         text = text + "- À " + path[i].name.title() + ", changez et prenez la ligne " + path[i+1].line.name.title() + " direction " + path[i+1].line.terminus[0].name.title() + ".\n"
                     elif (path[i+1].line.stations.index(path[i+1].id) - path[i+2].line.stations.index(path[i+2].id) < 0):

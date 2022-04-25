@@ -1,11 +1,12 @@
 import sys
 
 from set import *
-from look import *
+from utilities import *
 
 if __name__ == "__main__":
     if (len(sys.argv) != 4):
-        print("error : missing command line arguments (expected 3)")
+        print("error : missing command line arguments (expected 3) given", len(sys.argv)-1)
+        print_usage()
         exit(1)
     else:
         file = sys.argv[1]
